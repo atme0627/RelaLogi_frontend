@@ -8,4 +8,8 @@ export const handlers = [
   http.get(`${API_BASE}/api/health`, () => {
     return HttpResponse.json({ status: "ok" });
   }),
+
+  http.post(`${API_BASE}/api/puzzles/upload`, () => {
+    return HttpResponse.json({ message: "アップロード成功", puzzleId: "mock-123" });
+  }),
 ];
