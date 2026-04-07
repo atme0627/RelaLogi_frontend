@@ -12,6 +12,8 @@ type Props = {
     bottomLeft?: boolean;
     bottomRight?: boolean;
   };
+  // 背景色を上書き（HintBoardで透過にする場合など）
+  bgColor?: string;
 };
 
 // 個別の角丸を持つrectのパスを生成
@@ -40,11 +42,12 @@ export function BoardGrid({
   cellSize,
   variant,
   borderRadius = {},
+  bgColor: bgColorProp,
 }: Props) {
   const width = cellSize * cols;
   const height = cellSize * rows;
 
-  const bgColor = variant === "game" ? "var(--chakra-colors-gray-50)" : "var(--chakra-colors-blue-50)";
+  const bgColor = bgColorProp ?? (variant === "game" ? "var(--chakra-colors-gray-50)" : "var(--chakra-colors-blue-50)");
   const thinColor = "var(--chakra-colors-gray-200)";
   const thickColor = variant === "game" ? "var(--chakra-colors-gray-400)" : "var(--chakra-colors-blue-400)";
 

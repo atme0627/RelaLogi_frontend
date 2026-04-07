@@ -1,17 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Box, Button, Heading, Text } from "@chakra-ui/react";
 import { SizeSettingBoard } from "@/components/SizeSettingBoard";
+import { usePuzzleImage } from "@/contexts/PuzzleImageContext";
+import { usePuzzleData } from "@/contexts/PuzzleDataContext";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 
 const DEFAULT_SIZE = 20;
 const DEFAULT_HINT_SIZE = 6;
 
 export default function SizePage() {
+  const router = useRouter();
+  const { previewUrl } = usePuzzleImage();
+  const { cropRegions, setSizeConfig, setOcrResult } = usePuzzleData();
+
   const [gameRows, setGameRows] = useState(DEFAULT_SIZE);
   const [gameCols, setGameCols] = useState(DEFAULT_SIZE);
   const [maxVerticalHintRows, setMaxVerticalHintRows] = useState(DEFAULT_HINT_SIZE);
   const [maxHorizontalHintCols, setMaxHorizontalHintCols] = useState(DEFAULT_HINT_SIZE);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleReset = () => {
     setGameRows(DEFAULT_SIZE);
@@ -20,15 +30,56 @@ export default function SizePage() {
     setMaxHorizontalHintCols(DEFAULT_HINT_SIZE);
   };
 
-  const handleSubmit = () => {
-    // TODO: サイズ情報を次の画面に渡す
-    console.log({
-      gameRows,
-      gameCols,
-      maxVerticalHintRows,
-      maxHorizontalHintCols,
-    });
-  };
+  const handleSubmit = useCallback(async () => {
+    if (!cropRegions || !previewUrl) return;
+
+    setSubmitting(true);
+    try {
+      // previewUrl(Object URL)から画像Blobを取得
+      const res = await fetch(previewUrl);
+      const blob = await res.blob();
+
+      const formData = new FormData();
+      formData.append("image", blob, "puzzle.png");
+      formData.append("verticalHintRegion", JSON.stringify({
+        rows: maxVerticalHintRows,
+        cols: gameCols,
+        vertices: cropRegions[0],
+      }));
+      formData.append("horizontalHintRegion", JSON.stringify({
+        rows: gameRows,
+        cols: maxHorizontalHintCols,
+        vertices: cropRegions[1],
+      }));
+
+      const apiRes = await fetch(`${API_BASE}/api/puzzles/crop`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!apiRes.ok) throw new Error(`送信失敗 (${apiRes.status})`);
+
+      const data = await apiRes.json();
+
+      setSizeConfig({ gameRows, gameCols, maxVerticalHintRows, maxHorizontalHintCols });
+      setOcrResult({
+        verticalHint: data.vertical_hint,
+        horizontalHint: data.horizontal_hint,
+        verticalHintImage: data.vertical_hint_image,
+        horizontalHintImage: data.horizontal_hint_image,
+      });
+
+      router.push("/confirm");
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSubmitting(false);
+    }
+  }, [
+    cropRegions, previewUrl, gameRows, gameCols,
+    maxVerticalHintRows, maxHorizontalHintCols,
+    setSizeConfig, setOcrResult, router,
+  ]);
 
   return (
     <Box
@@ -73,6 +124,7 @@ export default function SizePage() {
           colorPalette="gray"
           w="120px"
           onClick={handleReset}
+          disabled={submitting}
         >
           リセット
         </Button>
@@ -81,6 +133,8 @@ export default function SizePage() {
           fontWeight="bold"
           w="120px"
           onClick={handleSubmit}
+          loading={submitting}
+          disabled={submitting}
         >
           決定
         </Button>
