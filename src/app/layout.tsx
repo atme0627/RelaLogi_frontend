@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body style={{ overflow: "hidden" }} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Provider>
           <Header />
           <main
@@ -23,7 +23,7 @@ export default function RootLayout({
               margin: "0 auto",
               padding: "0 16px",
               width: "100%",
-              height: "calc(100vh - 48px)",
+              minHeight: "calc(100vh - 48px)",
             }}
           >
             {children}
