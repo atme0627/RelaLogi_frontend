@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Provider } from "./provider";
-import { Header } from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "RelaLogi",
@@ -16,14 +15,13 @@ export default function RootLayout({
     <html lang="ja" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <Provider>
-          <Header />
           <main
             style={{
               maxWidth: "600px",
               margin: "0 auto",
               padding: "0 16px",
               width: "100%",
-              minHeight: "calc(100vh - 48px)",
+              minHeight: "100vh",
             }}
           >
             {children}
