@@ -9,7 +9,7 @@ export const handlers = [
     return HttpResponse.json({ status: "ok" });
   }),
 
-  http.post(`${API_BASE}/api/puzzles/upload`, () => {
-    return HttpResponse.json({ message: "アップロード成功", puzzleId: "mock-123" });
+  http.post(`${API_BASE}/api/puzzles/crop`, () => {
+    return HttpResponse.json({ status: "ok" });
   }),
 ];

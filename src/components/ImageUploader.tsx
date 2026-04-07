@@ -1,57 +1,36 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Box, Button, Text } from "@chakra-ui/react";
 import { FiX } from "react-icons/fi";
 import Image from "next/image";
 import { ImageDropZone } from "@/components/ImageDropZone";
+import { usePuzzleImage } from "@/contexts/PuzzleImageContext";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
-
-type UploadStatus = "idle" | "uploading" | "success" | "error";
-
-// 画像選択 → プレビュー → アップロードの一連のフローを管理
+// 画像選択 → プレビュー → 次画面への遷移を管理
 export function ImageUploader() {
-  const [file, setFile] = useState<File | null>(null);
-  const [status, setStatus] = useState<UploadStatus>("idle");
-  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
+  const { setPreviewUrl: sharePuzzleImage } = usePuzzleImage();
 
+  const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
 
   const handleSelect = useCallback((selected: File) => {
     setFile(selected);
     setPreviewUrl(URL.createObjectURL(selected));
-    setStatus("idle");
-    setErrorMessage("");
   }, []);
 
   const handleReset = useCallback(() => {
     setFile(null);
-    setStatus("idle");
-    setErrorMessage("");
+    setPreviewUrl("");
   }, []);
 
-  const handleUpload = useCallback(async () => {
-    if (!file) return;
-
-    setStatus("uploading");
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const res = await fetch(`${API_BASE}/api/puzzles/upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error(`アップロード失敗 (${res.status})`);
-
-      setStatus("success");
-    } catch (e) {
-      setStatus("error");
-      setErrorMessage(e instanceof Error ? e.message : "不明なエラー");
-    }
-  }, [file]);
+  const handleNext = useCallback(() => {
+    if (!previewUrl) return;
+    sharePuzzleImage(previewUrl);
+    router.push("/crop");
+  }, [previewUrl, sharePuzzleImage, router]);
 
   // 未選択時：ドロップゾーン、選択後：ファイル情報 — 同じ点線枠内で切り替え
   if (!file) {
@@ -104,25 +83,16 @@ export function ImageUploader() {
         </Box>
       </Box>
 
-      {/* アップロードボタン */}
+      {/* 次へボタン */}
       <Box display="flex" justifyContent="center">
         <Button
           colorPalette="blue"
           fontWeight="bold"
-          onClick={handleUpload}
-          loading={status === "uploading"}
-          disabled={status === "uploading"}
+          onClick={handleNext}
         >
-          アップロード
+          次へ
         </Button>
       </Box>
-
-      {status === "success" && (
-        <Text color="green.500" textAlign="center">アップロードが完了しました</Text>
-      )}
-      {status === "error" && (
-        <Text color="red.500" textAlign="center">{errorMessage}</Text>
-      )}
     </Box>
   );
 }
