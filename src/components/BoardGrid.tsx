@@ -58,12 +58,17 @@ export function BoardGrid({
   const br = borderRadius.bottomRight ? r : 0;
 
   const outerSw = 3;
-  const innerSw = 1.5;
 
   const clipId = `clip-${rows}-${cols}-${tl}${tr}${br}${bl}`;
 
+  // 各辺のstrokeWidthを計算
+  const topSw = (tl || tr) ? ((variant === "hint" && (tl && tr || tl && bl)) ? outerSw * 2 : outerSw) : (variant === "game" ? outerSw * 2 : (variant === "hint" ? 0.5 : outerSw));
+  const bottomSw = (bl || br) ? ((variant === "game" || (variant === "hint" && tl && bl)) ? outerSw * 2 : outerSw) : (variant === "hint" ? 0.5 : outerSw);
+  const leftSw = (tl || bl) ? ((variant === "hint" && (tl && tr || tl && bl)) ? outerSw * 2 : outerSw) : (variant === "game" ? outerSw * 2 : (variant === "hint" ? 0.5 : outerSw));
+  const rightSw = (tr || br) ? ((variant === "game" || (variant === "hint" && tl && tr)) ? outerSw * 2 : outerSw) : (variant === "hint" ? 0.5 : outerSw);
+
   return (
-    <svg width={width} height={height}>
+    <svg width={width} height={height} overflow="visible">
       <defs>
         {/* 角丸クリップ */}
         <clipPath id={clipId}>
@@ -103,22 +108,22 @@ export function BoardGrid({
             />
           );
         })}
-        {/* 外枠 — 各辺を個別に描画 */}
-        {/* 上辺 */}
-        <line x1={0} y1={0} x2={width} y2={0}
-          stroke={thickColor} strokeWidth={(tl || tr) ? ((variant === "hint" && (tl && tr || tl && bl)) ? outerSw * 2 : outerSw) : (variant === "game" ? outerSw * 2 : (variant === "hint" ? 0.5 : innerSw))} />
-        <line x1={0} y1={height} x2={width} y2={height}
-          stroke={thickColor} strokeWidth={(bl || br) ? ((variant === "game" || (variant === "hint" && tl && bl)) ? outerSw * 2 : outerSw) : (variant === "hint" ? 0.5 : innerSw)} />
-        <line x1={0} y1={0} x2={0} y2={height}
-          stroke={thickColor} strokeWidth={(tl || bl) ? ((variant === "hint" && (tl && tr || tl && bl)) ? outerSw * 2 : outerSw) : (variant === "game" ? outerSw * 2 : (variant === "hint" ? 0.5 : innerSw))} />
-        <line x1={width} y1={0} x2={width} y2={height}
-          stroke={thickColor} strokeWidth={(tr || br) ? ((variant === "game" || (variant === "hint" && tl && tr)) ? outerSw * 2 : outerSw) : (variant === "hint" ? 0.5 : innerSw)} />
-        {/* 角丸 */}
-        {tl > 0 && <path d={`M 0,${tl} A ${tl},${tl} 0 0 1 ${tl},0`} fill="none" stroke={thickColor} strokeWidth={outerSw * 2} />}
-        {tr > 0 && <path d={`M ${width - tr},0 A ${tr},${tr} 0 0 1 ${width},${tr}`} fill="none" stroke={thickColor} strokeWidth={outerSw * 2} />}
-        {br > 0 && <path d={`M ${width},${height - br} A ${br},${br} 0 0 1 ${width - br},${height}`} fill="none" stroke={thickColor} strokeWidth={variant === "game" ? outerSw * 2 : outerSw} />}
-        {bl > 0 && <path d={`M ${bl},${height} A ${bl},${bl} 0 0 1 0,${height - bl}`} fill="none" stroke={thickColor} strokeWidth={outerSw * 2} />}
       </g>
+
+      {/* 外枠 — グリッド端を中心に描画（クリップ外で内外均等に表示） */}
+      <line x1={tl} y1={0} x2={width - tr} y2={0}
+        stroke={thickColor} strokeWidth={topSw / 2} />
+      <line x1={bl} y1={height} x2={width - br} y2={height}
+        stroke={thickColor} strokeWidth={bottomSw / 2} />
+      <line x1={0} y1={tl} x2={0} y2={height - bl}
+        stroke={thickColor} strokeWidth={leftSw / 2} />
+      <line x1={width} y1={tr} x2={width} y2={height - br}
+        stroke={thickColor} strokeWidth={rightSw / 2} />
+      {/* 角丸 */}
+      {tl > 0 && <path d={`M 0,${tl} A ${tl},${tl} 0 0 1 ${tl},0`} fill="none" stroke={thickColor} strokeWidth={outerSw} />}
+      {tr > 0 && <path d={`M ${width - tr},0 A ${tr},${tr} 0 0 1 ${width},${tr}`} fill="none" stroke={thickColor} strokeWidth={outerSw} />}
+      {br > 0 && <path d={`M ${width},${height - br} A ${br},${br} 0 0 1 ${width - br},${height}`} fill="none" stroke={thickColor} strokeWidth={outerSw} />}
+      {bl > 0 && <path d={`M ${bl},${height} A ${bl},${bl} 0 0 1 0,${height - bl}`} fill="none" stroke={thickColor} strokeWidth={outerSw} />}
     </svg>
   );
 }

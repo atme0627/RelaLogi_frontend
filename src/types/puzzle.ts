@@ -9,6 +9,9 @@ export type SizeConfig = {
   maxHorizontalHintCols: number;
 };
 
+// プレイ画面のセル状態
+export type CellState = "empty" | "filled" | "cross" | "diamond";
+
 export type OcrResult = {
   verticalHint: string[][];
   horizontalHint: string[][];

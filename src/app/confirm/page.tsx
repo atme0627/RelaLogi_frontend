@@ -91,9 +91,8 @@ export default function ConfirmPage() {
   }, [router]);
 
   const handleConfirm = useCallback(() => {
-    // TODO: 確定後の処理（次の画面への遷移やAPI送信）
-    console.log({ verticalHint, horizontalHint });
-  }, [verticalHint, horizontalHint]);
+    router.push("/play");
+  }, [router]);
 
   if (!sizeConfig || !ocrResult) return null;
 
