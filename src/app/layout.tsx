@@ -23,7 +23,7 @@ export default function RootLayout({
               margin: "0 auto",
               padding: "0 16px",
               width: "100%",
-              height: "calc(100vh - 72px)",
+              height: "calc(100vh - 48px)",
             }}
           >
             {children}

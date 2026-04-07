@@ -13,13 +13,13 @@ export function Header() {
       as="header"
       w="100%"
       bg="gray.700"
-      px={6}
-      py={3}
+      px={4}
+      py={2}
       display="flex"
       alignItems="center"
     >
       <Link href="/">
-        <Text className={tiny5.className} fontSize="44px" lineHeight="1.2" color="gray.100">
+        <Text className={tiny5.className} fontSize="30px" lineHeight="1.2" color="gray.100">
           RELALOGI
         </Text>
       </Link>
