@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { PageLayout } from "@/components/PageLayout";
 import { PlayBoard } from "@/components/PlayBoard";
 import { usePuzzleData } from "@/contexts/PuzzleDataContext";
 import type { SizeConfig, OcrResult, CellState } from "@/types/puzzle";
@@ -53,9 +53,7 @@ export default function PlayPage() {
   const sizeConfig = ctxSizeConfig ?? devDefaults?.sizeConfig ?? null;
   const ocrResult = ctxOcrResult ?? devDefaults?.ocrResult ?? null;
 
-  // ゲーム盤面のセル状態
   const [cells, setCells] = useState<CellState[][]>([]);
-  // ヒントのグレーアウト状態
   const [verticalGrayedOut, setVerticalGrayedOut] = useState<boolean[][]>([]);
   const [horizontalGrayedOut, setHorizontalGrayedOut] = useState<boolean[][]>([]);
 
@@ -105,44 +103,25 @@ export default function PlayPage() {
   if (!sizeConfig || !ocrResult || cells.length === 0) return null;
 
   return (
-    <Box
-      w="100%"
-      minH="100%"
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      gap={6}
-      py={6}
+    <PageLayout
+      title="パズルを解く"
+      description="クリックで塗りつぶし / Shift+クリックで× / Cmd+クリックで◇"
+      onPrev={() => router.push("/confirm")}
     >
-      <Box>
-        <Heading size="2xl">パズルを解く</Heading>
-        <Text color="gray.500" mt={2} fontSize="md">
-          クリックで塗りつぶし / Shift+クリックで× / Cmd+クリックで◇
-        </Text>
-      </Box>
-
-      {/* mainのmaxWidthを突き破って画面幅いっぱいに表示 */}
-      <Box
-        w="100vw"
-        position="relative"
-        left="50%"
-        ml="-50vw"
-      >
-        <PlayBoard
-          gameCols={sizeConfig.gameCols}
-          gameRows={sizeConfig.gameRows}
-          maxHorizontalHintCols={sizeConfig.maxHorizontalHintCols}
-          maxVerticalHintRows={sizeConfig.maxVerticalHintRows}
-          verticalHint={ocrResult.verticalHint}
-          horizontalHint={ocrResult.horizontalHint}
-          cells={cells}
-          onCellChange={handleCellChange}
-          verticalGrayedOut={verticalGrayedOut}
-          horizontalGrayedOut={horizontalGrayedOut}
-          onToggleVerticalGray={handleToggleVerticalGray}
-          onToggleHorizontalGray={handleToggleHorizontalGray}
-        />
-      </Box>
-    </Box>
+      <PlayBoard
+        gameCols={sizeConfig.gameCols}
+        gameRows={sizeConfig.gameRows}
+        maxHorizontalHintCols={sizeConfig.maxHorizontalHintCols}
+        maxVerticalHintRows={sizeConfig.maxVerticalHintRows}
+        verticalHint={ocrResult.verticalHint}
+        horizontalHint={ocrResult.horizontalHint}
+        cells={cells}
+        onCellChange={handleCellChange}
+        verticalGrayedOut={verticalGrayedOut}
+        horizontalGrayedOut={horizontalGrayedOut}
+        onToggleVerticalGray={handleToggleVerticalGray}
+        onToggleHorizontalGray={handleToggleHorizontalGray}
+      />
+    </PageLayout>
   );
 }

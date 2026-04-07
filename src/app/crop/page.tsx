@@ -2,8 +2,8 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Button, Heading, Text } from "@chakra-ui/react";
-import { StepIndicator } from "@/components/StepIndicator";
+import { Button } from "@chakra-ui/react";
+import { PageLayout } from "@/components/PageLayout";
 import { CropEditor } from "@/components/CropEditor";
 import type { Quad } from "@/types/puzzle";
 import { usePuzzleImage } from "@/contexts/PuzzleImageContext";
@@ -27,47 +27,24 @@ export default function CropPage() {
   }, [previewUrl, setCropRegions, router]);
 
   return (
-    <Box
-      w="100%"
-      h="100%"
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      gap={6}
-    >
-      {/* インジケーター + テキスト */}
-      <Box>
-        <Box display="flex" justifyContent="center" mb={4}>
-          <StepIndicator totalSteps={4} currentStep={1} />
-        </Box>
-        <Heading size="2xl">ヒント領域の選択</Heading>
-        <Text color="gray.500" mt={2} fontSize="md">
-          縦ヒント・横ヒントの領域をそれぞれ指定してください
-        </Text>
-      </Box>
-
-      {/* 切り抜きエディタ */}
-      <CropEditor key={resetKey} onRegionsChange={handleRegionsChange} />
-
-      {/* ボタン */}
-      <Box display="flex" justifyContent="space-evenly">
+    <PageLayout
+      currentStep={1}
+      title="ヒント領域の選択"
+      description="縦ヒント・横ヒントの領域をそれぞれ指定してください"
+      onPrev={() => router.push("/")}
+      onNext={handleSubmit}
+      sideActions={
         <Button
           variant="outline"
           colorPalette="gray"
-          w="120px"
+          w="100%"
           onClick={() => setResetKey((k) => k + 1)}
         >
           リセット
         </Button>
-        <Button
-          colorPalette="blue"
-          fontWeight="bold"
-          w="120px"
-          onClick={handleSubmit}
-        >
-          決定
-        </Button>
-      </Box>
-    </Box>
+      }
+    >
+      <CropEditor key={resetKey} onRegionsChange={handleRegionsChange} />
+    </PageLayout>
   );
 }

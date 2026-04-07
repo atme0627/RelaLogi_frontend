@@ -3,6 +3,7 @@
 import { Box } from "@chakra-ui/react";
 import { BoardGrid } from "./BoardGrid";
 import { HintBoard } from "./HintBoard";
+import { usePuzzleData } from "@/contexts/PuzzleDataContext";
 
 type Props = {
   gameCols: number;
@@ -15,7 +16,6 @@ type Props = {
   onHorizontalHintChange: (row: number, col: number, value: string) => void;
   verticalHintImage?: string;
   horizontalHintImage?: string;
-  cellSize?: number;
 };
 
 // 確認画面用の盤面レイアウト（SizeSettingBoardと同じ配置、設定UIの代わりにHintBoard）
@@ -30,10 +30,11 @@ export function ConfirmBoard({
   onHorizontalHintChange,
   verticalHintImage,
   horizontalHintImage,
-  cellSize = 20,
 }: Props) {
+  const { cellSize } = usePuzzleData();
+
   return (
-    <Box display="flex" justifyContent="center">
+    <Box w="100%" h="100%" display="flex" alignItems="center" justifyContent="center">
       <Box
         display="grid"
         style={{
@@ -74,7 +75,6 @@ export function ConfirmBoard({
             cellSize={cellSize}
             variant="game"
             borderRadius={{ bottomRight: true }}
-
           />
         </Box>
       </Box>

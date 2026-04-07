@@ -10,6 +10,8 @@ type PuzzleDataContextType = {
   setSizeConfig: (config: SizeConfig) => void;
   ocrResult: OcrResult | null;
   setOcrResult: (result: OcrResult) => void;
+  cellSize: number;
+  setCellSize: (size: number) => void;
   clear: () => void;
 };
 
@@ -20,11 +22,13 @@ export function PuzzleDataProvider({ children }: { children: React.ReactNode }) 
   const [cropRegions, setCropRegions] = useState<[Quad, Quad] | null>(null);
   const [sizeConfig, setSizeConfig] = useState<SizeConfig | null>(null);
   const [ocrResult, setOcrResult] = useState<OcrResult | null>(null);
+  const [cellSize, setCellSize] = useState(20);
 
   const clear = useCallback(() => {
     setCropRegions(null);
     setSizeConfig(null);
     setOcrResult(null);
+    setCellSize(20);
   }, []);
 
   return (
@@ -32,6 +36,7 @@ export function PuzzleDataProvider({ children }: { children: React.ReactNode }) 
       cropRegions, setCropRegions,
       sizeConfig, setSizeConfig,
       ocrResult, setOcrResult,
+      cellSize, setCellSize,
       clear,
     }}>
       {children}
