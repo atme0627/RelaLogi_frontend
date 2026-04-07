@@ -3,6 +3,7 @@
 import { Box } from "@chakra-ui/react";
 import { PlayableGameBoard } from "./PlayableGameBoard";
 import { PlayableHintBoard } from "./PlayableHintBoard";
+import { usePuzzleData } from "@/contexts/PuzzleDataContext";
 import type { CellState } from "@/types/puzzle";
 
 type Props = {
@@ -18,7 +19,6 @@ type Props = {
   horizontalGrayedOut: boolean[][];
   onToggleVerticalGray: (row: number, col: number) => void;
   onToggleHorizontalGray: (row: number, col: number) => void;
-  cellSize?: number;
 };
 
 // プレイ画面用の盤面レイアウト（ConfirmBoardと同じ配置構成）
@@ -35,10 +35,11 @@ export function PlayBoard({
   horizontalGrayedOut,
   onToggleVerticalGray,
   onToggleHorizontalGray,
-  cellSize = 20,
 }: Props) {
+  const { cellSize } = usePuzzleData();
+
   return (
-    <Box display="flex" justifyContent="center">
+    <Box w="100%" h="100%" display="flex" alignItems="center" justifyContent="center">
       <Box
         display="grid"
         style={{
@@ -49,7 +50,7 @@ export function PlayBoard({
         {/* Row 1, Col 1: 空（左上の角） */}
         <Box />
 
-        {/* Row 1, Col 2: 縦ヒント盤面（上側） — 下辺(ゲーム盤接触)以外を外側描画 */}
+        {/* Row 1, Col 2: 縦ヒント盤面（上側） */}
         <PlayableHintBoard
           rows={maxVerticalHintRows}
           cols={gameCols}
