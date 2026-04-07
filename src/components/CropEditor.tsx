@@ -5,10 +5,9 @@ import type { PointerEvent as ReactPointerEvent } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { usePuzzleImage } from "@/contexts/PuzzleImageContext";
 import samplePuzzle from "@/mocks/fixtures/sample_puzzle.png";
+import type { Point, Quad } from "@/types/puzzle";
 
-// 四角形の4頂点（左上・右上・右下・左下の順）
-export type Quad = [Point, Point, Point, Point];
-export type Point = { x: number; y: number };
+export type { Point, Quad };
 
 // ドラッグ対象の識別
 type DragTarget = {
