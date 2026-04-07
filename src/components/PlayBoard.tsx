@@ -1,8 +1,9 @@
 "use client";
 
 import { Box } from "@chakra-ui/react";
-import { BoardGrid } from "./BoardGrid";
-import { HintBoard } from "./HintBoard";
+import { PlayableGameBoard } from "./PlayableGameBoard";
+import { PlayableHintBoard } from "./PlayableHintBoard";
+import type { CellState } from "@/types/puzzle";
 
 type Props = {
   gameCols: number;
@@ -11,25 +12,29 @@ type Props = {
   maxVerticalHintRows: number;
   verticalHint: string[][];
   horizontalHint: string[][];
-  onVerticalHintChange: (row: number, col: number, value: string) => void;
-  onHorizontalHintChange: (row: number, col: number, value: string) => void;
-  verticalHintImage?: string;
-  horizontalHintImage?: string;
+  cells: CellState[][];
+  onCellChange: (row: number, col: number, state: CellState) => void;
+  verticalGrayedOut: boolean[][];
+  horizontalGrayedOut: boolean[][];
+  onToggleVerticalGray: (row: number, col: number) => void;
+  onToggleHorizontalGray: (row: number, col: number) => void;
   cellSize?: number;
 };
 
-// 確認画面用の盤面レイアウト（SizeSettingBoardと同じ配置、設定UIの代わりにHintBoard）
-export function ConfirmBoard({
+// プレイ画面用の盤面レイアウト（ConfirmBoardと同じ配置構成）
+export function PlayBoard({
   gameCols,
   gameRows,
   maxHorizontalHintCols,
   maxVerticalHintRows,
   verticalHint,
   horizontalHint,
-  onVerticalHintChange,
-  onHorizontalHintChange,
-  verticalHintImage,
-  horizontalHintImage,
+  cells,
+  onCellChange,
+  verticalGrayedOut,
+  horizontalGrayedOut,
+  onToggleVerticalGray,
+  onToggleHorizontalGray,
   cellSize = 20,
 }: Props) {
   return (
@@ -44,39 +49,36 @@ export function ConfirmBoard({
         {/* Row 1, Col 1: 空（左上の角） */}
         <Box />
 
-        {/* Row 1, Col 2: 縦ヒント盤面（上側） */}
-        <HintBoard
+        {/* Row 1, Col 2: 縦ヒント盤面（上側） — 下辺(ゲーム盤接触)以外を外側描画 */}
+        <PlayableHintBoard
           rows={maxVerticalHintRows}
           cols={gameCols}
           cellSize={cellSize}
           values={verticalHint}
-          onChange={onVerticalHintChange}
-          backgroundImage={verticalHintImage}
+          grayedOut={verticalGrayedOut}
+          onToggleGray={onToggleVerticalGray}
           borderRadius={{ topLeft: true, topRight: true }}
         />
 
         {/* Row 2, Col 1: 横ヒント盤面（左側） */}
-        <HintBoard
+        <PlayableHintBoard
           rows={gameRows}
           cols={maxHorizontalHintCols}
           cellSize={cellSize}
           values={horizontalHint}
-          onChange={onHorizontalHintChange}
-          backgroundImage={horizontalHintImage}
+          grayedOut={horizontalGrayedOut}
+          onToggleGray={onToggleHorizontalGray}
           borderRadius={{ topLeft: true, bottomLeft: true }}
         />
 
         {/* Row 2, Col 2: ゲーム盤面（右下） */}
-        <Box overflow="visible">
-          <BoardGrid
-            rows={gameRows}
-            cols={gameCols}
-            cellSize={cellSize}
-            variant="game"
-            borderRadius={{ bottomRight: true }}
-
-          />
-        </Box>
+        <PlayableGameBoard
+          rows={gameRows}
+          cols={gameCols}
+          cellSize={cellSize}
+          cells={cells}
+          onCellChange={onCellChange}
+        />
       </Box>
     </Box>
   );

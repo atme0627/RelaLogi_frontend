@@ -62,13 +62,16 @@ export function SizeSettingBoard({
           cellSize={cellSize}
         />
         {/* Row 2, Col 3: 縦ヒント盤面 */}
-        <BoardGrid
-          rows={maxVerticalHintRows}
-          cols={gameCols}
-          cellSize={cellSize}
-          variant="hint"
-          borderRadius={{ topLeft: true, topRight: true }}
-        />
+        <Box overflow="visible">
+          <BoardGrid
+            rows={maxVerticalHintRows}
+            cols={gameCols}
+            cellSize={cellSize}
+            variant="hint"
+            borderRadius={{ topLeft: true, topRight: true }}
+
+          />
+        </Box>
         {/* Row 2, Col 4: 縦ヒント高さ設定 */}
         <RowSetting
           value={maxVerticalHintRows}
@@ -86,21 +89,27 @@ export function SizeSettingBoard({
           cellSize={cellSize}
         />
         {/* Row 3, Col 2: 横ヒント盤面 */}
-        <BoardGrid
-          rows={gameRows}
-          cols={maxHorizontalHintCols}
-          cellSize={cellSize}
-          variant="hint"
-          borderRadius={{ topLeft: true, bottomLeft: true }}
-        />
+        <Box overflow="visible">
+          <BoardGrid
+            rows={gameRows}
+            cols={maxHorizontalHintCols}
+            cellSize={cellSize}
+            variant="hint"
+            borderRadius={{ topLeft: true, bottomLeft: true }}
+
+          />
+        </Box>
         {/* Row 3, Col 3: ゲーム盤面 */}
-        <BoardGrid
-          rows={gameRows}
-          cols={gameCols}
-          cellSize={cellSize}
-          variant="game"
-          borderRadius={{ bottomRight: true }}
-        />
+        <Box overflow="visible">
+          <BoardGrid
+            rows={gameRows}
+            cols={gameCols}
+            cellSize={cellSize}
+            variant="game"
+            borderRadius={{ bottomRight: true }}
+
+          />
+        </Box>
         {/* Row 3, Col 4: 空 */}
         <Box />
 

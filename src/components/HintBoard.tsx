@@ -66,7 +66,7 @@ export function HintBoard({
       )}
 
       {/* Layer 2: SVGグリッド線（透過背景） */}
-      <div style={{ position: "absolute", inset: 0 }}>
+      <div style={{ position: "absolute", inset: 0, overflow: "visible" }}>
         <BoardGrid
           rows={rows}
           cols={cols}
@@ -74,6 +74,7 @@ export function HintBoard({
           variant="hint"
           borderRadius={borderRadius}
           bgColor={backgroundImage ? "transparent" : undefined}
+
         />
       </div>
 
