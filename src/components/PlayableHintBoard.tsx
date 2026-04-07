@@ -91,7 +91,6 @@ export function PlayableHintBoard({
                     : "var(--chakra-colors-gray-800)",
                   fontWeight: "bold",
                   fontSize: `${Math.max(cellSize * 0.6, 10)}px`,
-                  textDecoration: isGrayed ? "line-through" : "none",
                   transition: "background-color 0.1s, color 0.15s",
                 }}
               >
