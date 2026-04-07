@@ -61,7 +61,7 @@ export default function PlayPage() {
 
   useEffect(() => {
     if (!sizeConfig || !ocrResult) {
-      router.replace("/upload");
+      router.replace("/");
       return;
     }
     setCells(create2D(sizeConfig.gameRows, sizeConfig.gameCols, "empty" as CellState));

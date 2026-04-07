@@ -57,7 +57,7 @@ export default function ConfirmPage() {
 
   useEffect(() => {
     if (!sizeConfig || !ocrResult) {
-      router.replace("/upload");
+      router.replace("/");
       return;
     }
     setVerticalHint(ocrResult.verticalHint.map((row) => [...row]));
