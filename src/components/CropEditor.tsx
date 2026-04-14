@@ -4,7 +4,7 @@ import { useState, useRef, useCallback } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { usePuzzleImage } from "@/contexts/PuzzleImageContext";
-import samplePuzzle from "@/mocks/fixtures/sample_puzzle.png";
+import { mockPreviewUrl } from "@/mocks/dev-defaults";
 import type { Point, Quad } from "@/types/puzzle";
 
 export type { Point, Quad };
@@ -63,8 +63,7 @@ type Props = {
 // アップロード画像上で2つのヒント領域を選択するエディタ
 export function CropEditor({ onRegionsChange }: Props = {}) {
   const { previewUrl } = usePuzzleImage();
-  // 開発環境ではfixtureの画像をフォールバックとして使用
-  const effectiveUrl = previewUrl || (process.env.NODE_ENV === "development" ? samplePuzzle.src : "");
+  const effectiveUrl = previewUrl || mockPreviewUrl;
   const containerRef = useRef<HTMLDivElement>(null);
   const [imageSize, setImageSize] = useState<{ w: number; h: number } | null>(null);
   const [regions, setRegions] = useState<[Quad, Quad] | null>(null);
