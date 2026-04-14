@@ -85,7 +85,7 @@ export default function SizePage() {
     <PageLayout
       currentStep={2}
       title="盤面サイズの指定"
-      description="盤面とヒント領域のサイズを指定してください"
+      description={"盤面とヒント領域のサイズを\n指定してください"}
       onPrev={() => router.push("/crop")}
       onNext={handleSubmit}
       nextLoading={submitting}

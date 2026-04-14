@@ -72,12 +72,15 @@ export function PageLayout({
         {/* 左サイドバー */}
         <Box
           w="25%"
+          maxW="320px"
           flexShrink={0}
           display="flex"
           flexDirection="column"
-          justifyContent="center"
+          justifyContent="flex-start"
           gap={4}
-          p={8}
+          pt={12}
+          px={8}
+          pb={8}
           bg="white"
           borderRadius="2xl"
           borderWidth="1px"

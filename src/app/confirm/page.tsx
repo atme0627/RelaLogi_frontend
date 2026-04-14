@@ -57,7 +57,7 @@ export default function ConfirmPage() {
     <PageLayout
       currentStep={3}
       title="認識結果の確認・修正"
-      description="結果を確認し、誤りがあれば手動で修正してください。"
+      description={"結果を確認し、\n誤りがあれば手動で\n修正してください。"}
       onPrev={() => router.push("/size")}
       onNext={() => router.push("/play")}
     >
