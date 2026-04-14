@@ -56,6 +56,21 @@ function getLinkedPoint(ri: number, pi: number): [number, number] | null {
   return null;
 }
 
+// スクリーン座標 → SVG viewBox座標 に変換
+function screenToSvgCoords(
+  svg: SVGSVGElement,
+  clientX: number,
+  clientY: number,
+): { x: number; y: number } | null {
+  const ctm = svg.getScreenCTM();
+  if (!ctm) return null;
+  const pt = svg.createSVGPoint();
+  pt.x = clientX;
+  pt.y = clientY;
+  const svgPt = pt.matrixTransform(ctm.inverse());
+  return { x: svgPt.x, y: svgPt.y };
+}
+
 type Props = {
   onRegionsChange?: (regions: [Quad, Quad]) => void;
 };
@@ -64,7 +79,7 @@ type Props = {
 export function CropEditor({ onRegionsChange }: Props = {}) {
   const { previewUrl } = usePuzzleImage();
   const effectiveUrl = previewUrl || mockPreviewUrl;
-  const containerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [imageSize, setImageSize] = useState<{ w: number; h: number } | null>(null);
   const [regions, setRegions] = useState<[Quad, Quad] | null>(null);
   const [drag, setDrag] = useState<DragTarget>(null);
@@ -108,16 +123,15 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
     [],
   );
 
-  // ドラッグ中：表示座標をnaturalサイズ座標系に変換し、共有点なら両方更新
+  // ドラッグ中：SVGのgetScreenCTMで正確にviewBox座標へ変換
   const handlePointerMove = useCallback(
     (e: ReactPointerEvent) => {
-      if (!drag || !containerRef.current || !imageSize) return;
+      if (!drag || !svgRef.current || !imageSize) return;
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const scaleX = imageSize.w / rect.width;
-      const scaleY = imageSize.h / rect.height;
-      const x = Math.max(0, Math.min(imageSize.w, (e.clientX - rect.left) * scaleX));
-      const y = Math.max(0, Math.min(imageSize.h, (e.clientY - rect.top) * scaleY));
+      const coords = screenToSvgCoords(svgRef.current, e.clientX, e.clientY);
+      if (!coords) return;
+      const x = Math.max(0, Math.min(imageSize.w, coords.x));
+      const y = Math.max(0, Math.min(imageSize.h, coords.y));
 
       setRegions((prev) => {
         if (!prev) return prev;
@@ -155,11 +169,9 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
 
   return (
     <Box
-      ref={containerRef}
       position="relative"
-      display="inline-block"
-      maxW="100%"
-      maxH="100%"
+      w="100%"
+      h="100%"
       borderRadius="xl"
       overflow="hidden"
       userSelect="none"
@@ -167,20 +179,24 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
       onPointerUp={handlePointerUp}
       style={{ touchAction: "none", cursor: drag || hover ? "none" : undefined }}
     >
-      {/* パズル画像 */}
+      {/* パズル画像: objectFit containで中央配置 */}
       <img
         ref={imgRef}
         src={effectiveUrl}
         alt="パズル画像"
         onLoad={handleImageLoad}
-        style={{ maxWidth: "100%", maxHeight: "100%", display: "block", objectFit: "contain" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "block",
+          objectFit: "contain",
+        }}
       />
 
-      {/* SVGオーバーレイ: グレーアウト + 切り抜き領域 + ドラッグハンドル */}
+      {/* SVGオーバーレイ: preserveAspectRatioでimgと同じスケーリング */}
       {imageSize && regions && (
         <svg
-          width={imageSize.w}
-          height={imageSize.h}
+          ref={svgRef}
           style={{
             position: "absolute",
             top: 0,
@@ -189,6 +205,7 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
             height: "100%",
           }}
           viewBox={`0 0 ${imageSize.w} ${imageSize.h}`}
+          preserveAspectRatio="xMidYMid meet"
         >
           <defs>
             {/* マスク: 白=表示、黒=非表示。全体白で覆い、領域部分を黒くする → 領域外がグレーアウト */}

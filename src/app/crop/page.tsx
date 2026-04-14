@@ -44,7 +44,7 @@ export default function CropPage() {
         </Button>
       }
     >
-      <Box bg="white" borderRadius="xl" borderWidth="1px" borderColor="gray.300" boxShadow="md" p={4} maxH="100%" overflow="hidden">
+      <Box bg="white" borderRadius="xl" borderWidth="1px" borderColor="gray.300" boxShadow="md" p={4} h="100%" overflow="hidden">
         <CropEditor key={resetKey} onRegionsChange={handleRegionsChange} />
       </Box>
     </PageLayout>
