@@ -4,8 +4,10 @@ import { ReactNode } from "react";
 import { Box, IconButton, Text } from "@chakra-ui/react";
 import { Tiny5 } from "next/font/google";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import { motion } from "framer-motion";
 import { StepIndicator } from "./StepIndicator";
 import { GridBackground } from "./GridBackground";
+import { useNavigationDirection } from "@/contexts/NavigationContext";
 
 const tiny5 = Tiny5({ weight: "400", subsets: ["latin"] });
 
@@ -32,6 +34,10 @@ export function PageLayout({
   sideActions,
   children,
 }: Props) {
+  const direction = useNavigationDirection();
+  const xOffset =
+    direction === "forward" ? 60 : direction === "backward" ? -60 : 0;
+
   return (
     <Box h="100vh" display="flex" flexDirection="column" overflow="hidden">
       {/* ヘッダー */}
@@ -128,9 +134,21 @@ export function PageLayout({
             )}
           </Box>
 
-          <Box flex={1} h="100%" display="flex" alignItems="center" justifyContent="center">
+          {/* コンテンツ（遷移アニメーション付き） */}
+          <motion.div
+            initial={{ opacity: 0, x: xOffset }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            style={{
+              flex: 1,
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             {children}
-          </Box>
+          </motion.div>
 
           {/* 次へボタン */}
           <Box flexShrink={0}>
