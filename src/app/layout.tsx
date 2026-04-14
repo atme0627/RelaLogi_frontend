@@ -26,6 +26,20 @@ export default function RootLayout({
           <main style={{ width: "100%", height: "100vh", overflow: "hidden" }}>
             {children}
           </main>
+          <span
+            style={{
+              position: "fixed",
+              right: 12,
+              bottom: 8,
+              fontSize: 11,
+              color: "rgba(128,128,128,0.5)",
+              pointerEvents: "none",
+              userSelect: "none",
+              zIndex: 9999,
+            }}
+          >
+            © 2026 atme
+          </span>
         </Provider>
       </body>
     </html>
