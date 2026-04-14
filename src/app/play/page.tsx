@@ -137,7 +137,7 @@ export default function PlayPage() {
       title="パズルを解く"
       onPrev={() => router.push("/confirm")}
       sideActions={
-        <Box display="flex" gap={2}>
+        <Box display="flex" gap={1}>
           {PAINT_MODES.map(({ mode, symbol, label, color, bgActive, shortcutLabel }) => {
             const isActive = effectiveMode === mode;
             return (
@@ -147,8 +147,9 @@ export default function PlayPage() {
                 flex="1"
                 display="flex"
                 alignItems="center"
-                gap={1.5}
-                px={2.5}
+                justifyContent="center"
+                gap={1}
+                px={1.5}
                 py={1.5}
                 borderRadius="md"
                 borderWidth="1px"
@@ -159,12 +160,8 @@ export default function PlayPage() {
                 _hover={{ borderColor: color, bg: bgActive }}
                 onClick={() => setPaintMode(mode)}
               >
-                <Text fontSize="md" color={color} lineHeight="1">{symbol}</Text>
-                <Text fontSize="xs" color={isActive ? "gray.600" : "gray.400"} lineHeight="1" fontWeight={isActive ? "bold" : "normal"}>{label}</Text>
-                <Box flex="1" />
-                {shortcutLabel && (
-                  <Text fontSize="xs" color="gray.300" lineHeight="1">{shortcutLabel}</Text>
-                )}
+                <Text fontSize="sm" color={color} lineHeight="1">{symbol}</Text>
+                <Text fontSize="2xs" color={isActive ? "gray.600" : "gray.400"} lineHeight="1" fontWeight={isActive ? "bold" : "normal"}>{label}</Text>
               </Box>
             );
           })}

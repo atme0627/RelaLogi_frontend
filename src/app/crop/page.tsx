@@ -30,7 +30,7 @@ export default function CropPage() {
     <PageLayout
       currentStep={1}
       title="ヒント領域の選択"
-      description="縦ヒント・横ヒントの領域をそれぞれ指定してください"
+      description={"縦ヒント・横ヒントの領域を\nそれぞれ指定してください"}
       onPrev={() => router.push("/")}
       onNext={handleSubmit}
       sideActions={

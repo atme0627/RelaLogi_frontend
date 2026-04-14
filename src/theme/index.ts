@@ -32,9 +32,9 @@ const config = defineConfig({
       },
       caption: {
         value: {
-          fontSize: "xs",
+          fontSize: "sm",
           fontWeight: "normal",
-          lineHeight: "1.4",
+          lineHeight: "1.6",
           color: "gray.500",
         },
       },
