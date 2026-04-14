@@ -7,14 +7,15 @@ import { FiX } from "react-icons/fi";
 import Image from "next/image";
 import { ImageDropZone } from "@/components/ImageDropZone";
 import { usePuzzleImage } from "@/contexts/PuzzleImageContext";
+import { mockPreviewUrl, mockFile } from "@/mocks/dev-defaults";
 
 // 画像選択 → プレビュー → 次画面への遷移を管理
 export function ImageUploader() {
   const router = useRouter();
   const { setPreviewUrl: sharePuzzleImage } = usePuzzleImage();
 
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState("");
+  const [file, setFile] = useState<File | null>(mockFile);
+  const [previewUrl, setPreviewUrl] = useState(mockPreviewUrl);
 
   const handleSelect = useCallback((selected: File) => {
     setFile(selected);

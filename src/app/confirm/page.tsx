@@ -5,47 +5,14 @@ import { useRouter } from "next/navigation";
 import { PageLayout } from "@/components/PageLayout";
 import { ConfirmBoard } from "@/components/ConfirmBoard";
 import { usePuzzleData } from "@/contexts/PuzzleDataContext";
-import type { SizeConfig, OcrResult } from "@/types/puzzle";
-import sampleVerticalHint from "@/mocks/fixtures/sample_cropped_height_hint.png";
-import sampleHorizontalHint from "@/mocks/fixtures/sample_cropped_width_hint.png";
-
-// 開発用デフォルトデータ（/confirmに直接アクセスした場合に使用）
-function createDevDefaults(): { sizeConfig: SizeConfig; ocrResult: OcrResult } {
-  const config: SizeConfig = {
-    gameCols: 25,
-    gameRows: 25,
-    maxVerticalHintRows: 7,
-    maxHorizontalHintCols: 7,
-  };
-
-  const generateHints = (rows: number, cols: number): string[][] =>
-    Array.from({ length: rows }, () => {
-      const count = Math.floor(Math.random() * 3) + 1;
-      const hints = Array.from({ length: count }, () =>
-        String(Math.floor(Math.random() * 15) + 1),
-      );
-      const empties = Array.from({ length: cols - count }, () => "");
-      return [...empties, ...hints];
-    });
-
-  return {
-    sizeConfig: config,
-    ocrResult: {
-      verticalHint: generateHints(config.maxVerticalHintRows, config.gameCols),
-      horizontalHint: generateHints(config.gameRows, config.maxHorizontalHintCols),
-      verticalHintImage: (sampleVerticalHint as { src?: string }).src ?? (sampleVerticalHint as unknown as string),
-      horizontalHintImage: (sampleHorizontalHint as { src?: string }).src ?? (sampleHorizontalHint as unknown as string),
-    },
-  };
-}
+import { createMockConfirmDefaults } from "@/mocks/dev-defaults";
 
 export default function ConfirmPage() {
   const router = useRouter();
   const { sizeConfig: ctxSizeConfig, ocrResult: ctxOcrResult } = usePuzzleData();
 
-  const isDev = process.env.NODE_ENV === "development";
   const [devDefaults] = useState(() =>
-    (!ctxSizeConfig || !ctxOcrResult) && isDev ? createDevDefaults() : null,
+    (!ctxSizeConfig || !ctxOcrResult) ? createMockConfirmDefaults() : null,
   );
   const sizeConfig = ctxSizeConfig ?? devDefaults?.sizeConfig ?? null;
   const ocrResult = ctxOcrResult ?? devDefaults?.ocrResult ?? null;
