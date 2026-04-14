@@ -142,7 +142,7 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
 
   if (!effectiveUrl) {
     return (
-      <Box textAlign="center" py={10}>
+      <Box textAlign="center" py={8}>
         <Text color="gray.500">画像がありません。アップロード画面に戻ってください。</Text>
       </Box>
     );

@@ -49,8 +49,8 @@ export function ImageDropZone({ onSelect }: Props) {
       borderColor={isDragging ? "blue.400" : "gray.500"}
       borderRadius="xl"
       w="100%"
-      px={20}
-      py={20}
+      px={12}
+      py={12}
       textAlign="center"
       cursor="pointer"
       bg={isDragging ? "blue.50" : "transparent"}
@@ -60,7 +60,7 @@ export function ImageDropZone({ onSelect }: Props) {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <Box display="flex" justifyContent="center" mb={3} color="gray.400" fontSize="48px">
+      <Box display="flex" justifyContent="center" mb={4} color="gray.400" fontSize="48px">
         <FiUpload />
       </Box>
       <Text color="gray.500" fontSize="lg">
