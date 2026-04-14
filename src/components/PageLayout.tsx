@@ -40,7 +40,7 @@ export function PageLayout({
         alignItems="center"
         justifyContent="space-between"
         px={6}
-        py={3}
+        py={2}
         flexShrink={0}
         bg="gray.200"
         borderBottomWidth="1px"
@@ -60,15 +60,15 @@ export function PageLayout({
       </Box>
 
       {/* メインエリア: 全体に均等パディング */}
-      <Box flex={1} h={0} display="flex" overflow="hidden" p={10} gap={10}>
+      <Box flex={1} h={0} display="flex" overflow="hidden" p={4} gap={4}>
         {/* 左サイドバー */}
         <Box
-          w="25%"
-          flexShrink={0}
+          flex={1}
           display="flex"
           flexDirection="column"
           justifyContent="center"
           gap={4}
+          p={4}
         >
           {currentStep !== undefined && (
             <Box mb={4}>
@@ -86,12 +86,12 @@ export function PageLayout({
 
         {/* メインコンテンツ + 矢印 */}
         <Box
-          flex={1}
+          flex={2}
           h="100%"
           display="flex"
           alignItems="center"
           justifyContent="center"
-          gap={6}
+          p={4}
         >
           {/* 戻るボタン */}
           <Box flexShrink={0}>

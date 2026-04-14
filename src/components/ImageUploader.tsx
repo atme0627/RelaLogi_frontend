@@ -46,7 +46,7 @@ export function ImageUploader() {
       <Box
         display="flex"
         alignItems="center"
-        gap={3}
+        gap={4}
         p={4}
         border="1px solid"
         borderColor="gray.200"
