@@ -1,11 +1,10 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
 import { Box } from "@chakra-ui/react";
 import { BoardGrid } from "./BoardGrid";
 import { ColumnSetting } from "./ColumnSetting";
 import { RowSetting } from "./RowSetting";
-import { usePuzzleData } from "@/contexts/PuzzleDataContext";
+import { useCellSize } from "@/hooks/useCellSize";
 
 type Props = {
   gameCols: number;
@@ -20,8 +19,6 @@ type Props = {
 
 // 設定UIの高さ/幅の概算（ColumnSetting/RowSettingが占める領域）
 const SETTING_UI_SIZE = 60;
-const MAX_CELL_SIZE = 20;
-const MIN_CELL_SIZE = 6;
 
 // 4×4グリッドで盤面とサイズ設定UIを配置するコンポーネント
 export function SizeSettingBoard({
@@ -34,55 +31,17 @@ export function SizeSettingBoard({
   maxVerticalHintRows,
   setMaxVerticalHintRows,
 }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const containerSizeRef = useRef({ w: 0, h: 0 });
-  const valuesRef = useRef({ gameCols, gameRows, maxHorizontalHintCols, maxVerticalHintRows });
-  valuesRef.current = { gameCols, gameRows, maxHorizontalHintCols, maxVerticalHintRows };
-  const { setCellSize: setSharedCellSize } = usePuzzleData();
-  const [cellSize, setCellSize] = useState(MAX_CELL_SIZE);
-
-  const recalc = useCallback(() => {
-    const { w, h } = containerSizeRef.current;
-    if (w === 0 || h === 0) return;
-    const v = valuesRef.current;
-    const availW = w - SETTING_UI_SIZE * 2;
-    const availH = h - SETTING_UI_SIZE * 2;
-    const totalCols = v.gameCols + v.maxHorizontalHintCols;
-    const totalRows = v.gameRows + v.maxVerticalHintRows;
-    const fitW = availW / totalCols;
-    const fitH = availH / totalRows;
-    const size = Math.max(MIN_CELL_SIZE, Math.min(MAX_CELL_SIZE, Math.floor(Math.min(fitW, fitH))));
-    setCellSize(size);
-    setSharedCellSize(size);
-  }, [setSharedCellSize]);
-
-  // コンテナリサイズ時のみcellSizeを再計算
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const update = () => {
-      const el = containerRef.current;
-      if (!el) return;
-      containerSizeRef.current = { w: el.clientWidth, h: el.clientHeight };
-      recalc();
-    };
-
-    const observer = new ResizeObserver(update);
-    observer.observe(containerRef.current);
-    update();
-    return () => observer.disconnect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // 値変更時はデバウンスして再計算（連打中のガタつき防止）
-  useEffect(() => {
-    const timer = setTimeout(recalc, 300);
-    return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameCols, gameRows, maxHorizontalHintCols, maxVerticalHintRows]);
+  const { containerRef, cellSize } = useCellSize({
+    gameCols,
+    gameRows,
+    maxHorizontalHintCols,
+    maxVerticalHintRows,
+    uiOffset: SETTING_UI_SIZE,
+  });
 
   return (
     <Box ref={containerRef} w="100%" h="100%" display="flex" alignItems="center" justifyContent="center">
+      <Box bg="white" borderRadius="xl" boxShadow="md" p={4}>
       <Box
         display="grid"
         style={{
@@ -167,6 +126,7 @@ export function SizeSettingBoard({
         <Box />
         <Box />
         <Box />
+      </Box>
       </Box>
     </Box>
   );

@@ -7,10 +7,11 @@ import { FiUpload } from "react-icons/fi";
 
 type Props = {
   onSelect: (file: File) => void;
+  children?: React.ReactNode;
 };
 
 // 画像ファイルを選択・ドロップするためのゾーン
-export function ImageDropZone({ onSelect }: Props) {
+export function ImageDropZone({ onSelect, children }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -60,15 +61,19 @@ export function ImageDropZone({ onSelect }: Props) {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <Box display="flex" justifyContent="center" mb={4} color="gray.400" fontSize="48px">
-        <FiUpload />
-      </Box>
-      <Text color="gray.500" textStyle="body">
-        イラストロジックの画像をアップロード
-      </Text>
-      <Text color="gray.400" textStyle="caption" mt={2}>
-        クリックまたはドラッグ＆ドロップ
-      </Text>
+      {children ?? (
+        <>
+          <Box display="flex" justifyContent="center" mb={4} color="gray.400" fontSize="48px">
+            <FiUpload />
+          </Box>
+          <Text color="gray.500" textStyle="body">
+            イラストロジックの画像をアップロード
+          </Text>
+          <Text color="gray.400" textStyle="caption" mt={2}>
+            クリックまたはドラッグ＆ドロップ
+          </Text>
+        </>
+      )}
       <input
         ref={inputRef}
         type="file"

@@ -3,7 +3,7 @@
 import { Box } from "@chakra-ui/react";
 import { PlayableGameBoard } from "./PlayableGameBoard";
 import { PlayableHintBoard } from "./PlayableHintBoard";
-import { usePuzzleData } from "@/contexts/PuzzleDataContext";
+import { useCellSize } from "@/hooks/useCellSize";
 import type { CellState } from "@/types/puzzle";
 
 type Props = {
@@ -36,10 +36,16 @@ export function PlayBoard({
   onToggleVerticalGray,
   onToggleHorizontalGray,
 }: Props) {
-  const { cellSize } = usePuzzleData();
+  const { containerRef, cellSize } = useCellSize({
+    gameCols,
+    gameRows,
+    maxHorizontalHintCols,
+    maxVerticalHintRows,
+  });
 
   return (
-    <Box w="100%" h="100%" display="flex" alignItems="center" justifyContent="center">
+    <Box ref={containerRef} w="100%" h="100%" display="flex" alignItems="center" justifyContent="center">
+      <Box bg="white" borderRadius="xl" boxShadow="md" p={4}>
       <Box
         display="grid"
         style={{
@@ -80,6 +86,7 @@ export function PlayBoard({
           cells={cells}
           onCellChange={onCellChange}
         />
+      </Box>
       </Box>
     </Box>
   );

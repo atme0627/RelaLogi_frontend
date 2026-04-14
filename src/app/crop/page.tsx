@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import { PageLayout } from "@/components/PageLayout";
 import { CropEditor } from "@/components/CropEditor";
 import type { Quad } from "@/types/puzzle";
@@ -44,7 +44,9 @@ export default function CropPage() {
         </Button>
       }
     >
-      <CropEditor key={resetKey} onRegionsChange={handleRegionsChange} />
+      <Box bg="white" borderRadius="xl" boxShadow="md" p={4} maxH="100%" overflow="hidden">
+        <CropEditor key={resetKey} onRegionsChange={handleRegionsChange} />
+      </Box>
     </PageLayout>
   );
 }
