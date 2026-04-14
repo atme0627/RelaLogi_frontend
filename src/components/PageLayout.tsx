@@ -4,7 +4,10 @@ import { ReactNode } from "react";
 import { Box, IconButton, Text } from "@chakra-ui/react";
 import { Tiny5 } from "next/font/google";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import { motion } from "framer-motion";
 import { StepIndicator } from "./StepIndicator";
+import { GridBackground } from "./GridBackground";
+import { useNavigationDirection } from "@/contexts/NavigationContext";
 
 const tiny5 = Tiny5({ weight: "400", subsets: ["latin"] });
 
@@ -31,6 +34,10 @@ export function PageLayout({
   sideActions,
   children,
 }: Props) {
+  const direction = useNavigationDirection();
+  const xOffset =
+    direction === "forward" ? 60 : direction === "backward" ? -60 : 0;
+
   return (
     <Box h="100vh" display="flex" flexDirection="column" overflow="hidden">
       {/* ヘッダー */}
@@ -60,7 +67,8 @@ export function PageLayout({
       </Box>
 
       {/* メインエリア: 全体に均等パディング */}
-      <Box flex={1} h={0} display="flex" overflow="hidden" p={4} gap={4} bg="gray.100">
+      <Box flex={1} h={0} display="flex" overflow="hidden" p={4} gap={4} bg="gray.100" position="relative">
+        <GridBackground />
         {/* 左サイドバー */}
         <Box
           w="25%"
@@ -72,7 +80,11 @@ export function PageLayout({
           p={8}
           bg="white"
           borderRadius="2xl"
+          borderWidth="1px"
+          borderColor="gray.300"
           boxShadow="md"
+          position="relative"
+          zIndex={1}
         >
           {currentStep !== undefined && (
             <Box mb={4}>
@@ -98,6 +110,8 @@ export function PageLayout({
           gap={8}
           py={12}
           px={4}
+          position="relative"
+          zIndex={1}
         >
           {/* 戻るボタン */}
           <Box flexShrink={0}>
@@ -120,9 +134,21 @@ export function PageLayout({
             )}
           </Box>
 
-          <Box flex={1} h="100%" display="flex" alignItems="center" justifyContent="center">
+          {/* コンテンツ（遷移アニメーション付き） */}
+          <motion.div
+            initial={{ opacity: 0, x: xOffset }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            style={{
+              flex: 1,
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             {children}
-          </Box>
+          </motion.div>
 
           {/* 次へボタン */}
           <Box flexShrink={0}>

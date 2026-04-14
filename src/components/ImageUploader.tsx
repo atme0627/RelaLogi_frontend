@@ -35,7 +35,7 @@ export function ImageUploader() {
 
   if (!file) {
     return (
-      <Box bg="white" borderRadius="xl" boxShadow="md" p={4}>
+      <Box bg="white" borderRadius="xl" borderWidth="1px" borderColor="gray.300" boxShadow="md" p={4}>
         <ImageDropZone onSelect={handleSelect} />
       </Box>
     );
@@ -66,7 +66,7 @@ export function ImageUploader() {
       >
         <FiX />
       </Box>
-      <Box bg="white" borderRadius="xl" boxShadow="md" p={4} display="flex" flexDirection="column" alignItems="center" gap={3}>
+      <Box bg="white" borderRadius="xl" borderWidth="1px" borderColor="gray.300" boxShadow="md" p={4} display="flex" flexDirection="column" alignItems="center" gap={3}>
         <Box borderRadius="lg" overflow="hidden">
           <Image
             src={previewUrl}
