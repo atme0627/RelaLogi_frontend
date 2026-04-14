@@ -40,7 +40,7 @@ export function ConfirmBoard({
 
   return (
     <Box ref={containerRef} w="100%" h="100%" display="flex" alignItems="center" justifyContent="center">
-      <Box bg="white" borderRadius="xl" boxShadow="md" p={4}>
+      <Box bg="white" borderRadius="xl" borderWidth="1px" borderColor="gray.300" boxShadow="md" p={4}>
       <Box
         display="grid"
         style={{

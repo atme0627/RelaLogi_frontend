@@ -5,6 +5,7 @@ import { Box, IconButton, Text } from "@chakra-ui/react";
 import { Tiny5 } from "next/font/google";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { StepIndicator } from "./StepIndicator";
+import { GridBackground } from "./GridBackground";
 
 const tiny5 = Tiny5({ weight: "400", subsets: ["latin"] });
 
@@ -60,7 +61,8 @@ export function PageLayout({
       </Box>
 
       {/* メインエリア: 全体に均等パディング */}
-      <Box flex={1} h={0} display="flex" overflow="hidden" p={4} gap={4} bg="gray.100">
+      <Box flex={1} h={0} display="flex" overflow="hidden" p={4} gap={4} bg="gray.100" position="relative">
+        <GridBackground />
         {/* 左サイドバー */}
         <Box
           w="25%"
@@ -72,7 +74,11 @@ export function PageLayout({
           p={8}
           bg="white"
           borderRadius="2xl"
+          borderWidth="1px"
+          borderColor="gray.300"
           boxShadow="md"
+          position="relative"
+          zIndex={1}
         >
           {currentStep !== undefined && (
             <Box mb={4}>
@@ -98,6 +104,8 @@ export function PageLayout({
           gap={8}
           py={12}
           px={4}
+          position="relative"
+          zIndex={1}
         >
           {/* 戻るボタン */}
           <Box flexShrink={0}>
