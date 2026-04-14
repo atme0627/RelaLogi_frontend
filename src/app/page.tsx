@@ -12,8 +12,8 @@ export default function Home() {
   return (
     <PageLayout
       currentStep={0}
-      title="画像アップロード"
-      description="写真を撮るだけでイラストロジックを電子化。いつでもどこでもブラウザで楽しめます。"
+      title="画像をアップロード"
+      description={"イラストロジックの問題画像をアップロードしてください。\n対応形式: JPG, PNG"}
       onNext={() => router.push("/crop")}
       nextDisabled={!previewUrl}
     >

@@ -56,8 +56,8 @@ export default function ConfirmPage() {
   return (
     <PageLayout
       currentStep={3}
-      title="ヒントの確認・修正"
-      description="OCR結果を確認し、必要に応じて修正してください"
+      title="認識結果の確認・修正"
+      description="結果を確認し、誤りがあれば手動で修正してください。"
       onPrev={() => router.push("/size")}
       onNext={() => router.push("/play")}
     >
