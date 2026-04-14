@@ -70,7 +70,7 @@ export function ImageUploader() {
         </Box>
         <Box flex={1} overflow="hidden">
           <Text fontWeight="bold" truncate>{file.name}</Text>
-          <Text fontSize="sm" color="gray.500">{fileSize} KB</Text>
+          <Text textStyle="label" color="gray.500">{fileSize} KB</Text>
         </Box>
         <Box
           as="button"

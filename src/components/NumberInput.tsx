@@ -43,7 +43,7 @@ export function NumberInput({ value, onChange, min, max }: Props) {
       style={{
         textAlign: "center",
         fontWeight: "bold",
-        fontSize: "14px",
+        fontSize: "0.875rem",
         width: "32px",
         border: "none",
         outline: "none",

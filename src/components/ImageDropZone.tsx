@@ -63,10 +63,10 @@ export function ImageDropZone({ onSelect }: Props) {
       <Box display="flex" justifyContent="center" mb={4} color="gray.400" fontSize="48px">
         <FiUpload />
       </Box>
-      <Text color="gray.500" fontSize="lg">
+      <Text color="gray.500" textStyle="body">
         イラストロジックの画像をアップロード
       </Text>
-      <Text color="gray.400" fontSize="sm" mt={2}>
+      <Text color="gray.400" textStyle="caption" mt={2}>
         クリックまたはドラッグ＆ドロップ
       </Text>
       <input
