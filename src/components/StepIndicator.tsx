@@ -32,8 +32,8 @@ export function StepIndicator({ totalSteps, currentStep }: Props) {
               alignItems="center"
               justifyContent="center"
               bg={isCompleted || isActive ? "blue.500" : "gray.200"}
-              color={isCompleted || isActive ? "white" : "gray.500"}
-              textStyle="caption"
+              color="white"
+              fontSize="xs"
               fontWeight="bold"
             >
               {isCompleted ? "✓" : i + 1}
