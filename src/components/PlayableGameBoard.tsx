@@ -10,12 +10,15 @@ type DragMode =
   | "diamondSet" | "diamondErase"
   | null;
 
+export type PaintMode = "filled" | "cross" | "diamond";
+
 type Props = {
   rows: number;
   cols: number;
   cellSize: number;
   cells: CellState[][];
   onCellChange: (row: number, col: number, state: CellState) => void;
+  paintMode?: PaintMode;
 };
 
 // 2点間のセルをBresenhamアルゴリズムで補間
@@ -61,6 +64,7 @@ export function PlayableGameBoard({
   cellSize,
   cells,
   onCellChange,
+  paintMode = "filled",
 }: Props) {
   const width = cellSize * cols;
   const height = cellSize * rows;
@@ -94,18 +98,25 @@ export function PlayableGameBoard({
       const [row, col] = cell;
       const current = cells[row][col];
 
-      if (e.shiftKey) {
-        const mode = current === "cross" ? "crossErase" : "crossSet";
-        dragModeRef.current = mode;
-        onCellChange(row, col, mode === "crossSet" ? "cross" : "empty");
-      } else if (e.metaKey) {
-        const mode = current === "diamond" ? "diamondErase" : "diamondSet";
-        dragModeRef.current = mode;
-        onCellChange(row, col, mode === "diamondSet" ? "diamond" : "empty");
+      // 修飾キーで一時的にモード切替、なければ paintMode を使用
+      const effectiveMode: PaintMode = e.shiftKey
+        ? "cross"
+        : e.metaKey
+          ? "diamond"
+          : paintMode;
+
+      if (effectiveMode === "cross") {
+        const dm = current === "cross" ? "crossErase" : "crossSet";
+        dragModeRef.current = dm;
+        onCellChange(row, col, dm === "crossSet" ? "cross" : "empty");
+      } else if (effectiveMode === "diamond") {
+        const dm = current === "diamond" ? "diamondErase" : "diamondSet";
+        dragModeRef.current = dm;
+        onCellChange(row, col, dm === "diamondSet" ? "diamond" : "empty");
       } else {
-        const mode = current === "filled" ? "erase" : "fill";
-        dragModeRef.current = mode;
-        onCellChange(row, col, mode === "fill" ? "filled" : "empty");
+        const dm = current === "filled" ? "erase" : "fill";
+        dragModeRef.current = dm;
+        onCellChange(row, col, dm === "fill" ? "filled" : "empty");
       }
       lastCellRef.current = cell;
     },

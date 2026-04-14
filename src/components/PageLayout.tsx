@@ -14,7 +14,7 @@ const tiny5 = Tiny5({ weight: "400", subsets: ["latin"] });
 type Props = {
   currentStep?: number;
   title: string;
-  description: string;
+  description?: string;
   onPrev?: () => void;
   onNext?: () => void;
   nextLoading?: boolean;
@@ -94,9 +94,11 @@ export function PageLayout({
           <Text textStyle="heading">
             {title}
           </Text>
-          <Text textStyle="caption">
-            {description}
-          </Text>
+          {description && (
+            <Text textStyle="caption" whiteSpace="pre-line">
+              {description}
+            </Text>
+          )}
           {sideActions && <Box mt={2}>{sideActions}</Box>}
         </Box>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Box } from "@chakra-ui/react";
-import { PlayableGameBoard } from "./PlayableGameBoard";
+import { PlayableGameBoard, type PaintMode } from "./PlayableGameBoard";
 import { PlayableHintBoard } from "./PlayableHintBoard";
 import { useCellSize } from "@/hooks/useCellSize";
 import type { CellState } from "@/types/puzzle";
@@ -19,6 +19,7 @@ type Props = {
   horizontalGrayedOut: boolean[][];
   onToggleVerticalGray: (row: number, col: number) => void;
   onToggleHorizontalGray: (row: number, col: number) => void;
+  paintMode?: PaintMode;
 };
 
 // プレイ画面用の盤面レイアウト（ConfirmBoardと同じ配置構成）
@@ -35,6 +36,7 @@ export function PlayBoard({
   horizontalGrayedOut,
   onToggleVerticalGray,
   onToggleHorizontalGray,
+  paintMode,
 }: Props) {
   const { containerRef, cellSize } = useCellSize({
     gameCols,
@@ -85,6 +87,7 @@ export function PlayBoard({
           cellSize={cellSize}
           cells={cells}
           onCellChange={onCellChange}
+          paintMode={paintMode}
         />
       </Box>
       </Box>
