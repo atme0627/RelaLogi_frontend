@@ -3,7 +3,7 @@
 import { Box } from "@chakra-ui/react";
 import { BoardGrid } from "./BoardGrid";
 import { HintBoard } from "./HintBoard";
-import { usePuzzleData } from "@/contexts/PuzzleDataContext";
+import { useCellSize } from "@/hooks/useCellSize";
 
 type Props = {
   gameCols: number;
@@ -31,10 +31,16 @@ export function ConfirmBoard({
   verticalHintImage,
   horizontalHintImage,
 }: Props) {
-  const { cellSize } = usePuzzleData();
+  const { containerRef, cellSize } = useCellSize({
+    gameCols,
+    gameRows,
+    maxHorizontalHintCols,
+    maxVerticalHintRows,
+  });
 
   return (
-    <Box w="100%" h="100%" display="flex" alignItems="center" justifyContent="center">
+    <Box ref={containerRef} w="100%" h="100%" display="flex" alignItems="center" justifyContent="center">
+      <Box bg="white" borderRadius="xl" boxShadow="md" p={4}>
       <Box
         display="grid"
         style={{
@@ -77,6 +83,7 @@ export function ConfirmBoard({
             borderRadius={{ bottomRight: true }}
           />
         </Box>
+      </Box>
       </Box>
     </Box>
   );

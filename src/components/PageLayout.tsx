@@ -60,15 +60,19 @@ export function PageLayout({
       </Box>
 
       {/* メインエリア: 全体に均等パディング */}
-      <Box flex={1} h={0} display="flex" overflow="hidden" p={4} gap={4}>
+      <Box flex={1} h={0} display="flex" overflow="hidden" p={4} gap={4} bg="gray.100">
         {/* 左サイドバー */}
         <Box
-          flex={1}
+          w="25%"
+          flexShrink={0}
           display="flex"
           flexDirection="column"
           justifyContent="center"
           gap={4}
-          p={4}
+          p={8}
+          bg="white"
+          borderRadius="2xl"
+          boxShadow="md"
         >
           {currentStep !== undefined && (
             <Box mb={4}>
@@ -86,21 +90,27 @@ export function PageLayout({
 
         {/* メインコンテンツ + 矢印 */}
         <Box
-          flex={2}
+          flex={4}
           h="100%"
           display="flex"
           alignItems="center"
           justifyContent="center"
-          p={4}
+          gap={8}
+          py={12}
+          px={4}
         >
           {/* 戻るボタン */}
           <Box flexShrink={0}>
             {onPrev ? (
               <IconButton
                 aria-label="前へ"
-                variant="ghost"
+                variant="solid"
+                bg="white"
+                color="gray.600"
+                _hover={{ bg: "gray.50" }}
                 size="lg"
                 rounded="full"
+                boxShadow="md"
                 onClick={onPrev}
               >
                 <LuChevronLeft />
@@ -110,7 +120,7 @@ export function PageLayout({
             )}
           </Box>
 
-          <Box flex={1} h="100%" overflow="hidden" borderRadius="xl" display="flex" alignItems="center" justifyContent="center" p={4}>
+          <Box flex={1} h="100%" display="flex" alignItems="center" justifyContent="center">
             {children}
           </Box>
 
@@ -124,6 +134,7 @@ export function PageLayout({
                 onClick={onNext}
                 loading={nextLoading}
                 disabled={nextDisabled}
+                boxShadow={nextDisabled ? "none" : "md"}
                 {...(nextDisabled
                   ? { variant: "ghost" }
                   : { bg: "blue.500", color: "white", _hover: { bg: "blue.600" } }

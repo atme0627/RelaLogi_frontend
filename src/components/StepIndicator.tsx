@@ -16,10 +16,10 @@ export function StepIndicator({ totalSteps, currentStep }: Props) {
         const isCompleted = i < currentStep;
 
         return (
-          <Box key={i} display="flex" alignItems="center">
+          <Box key={i} display="flex" alignItems="center" flex={i > 0 ? 1 : undefined}>
             {i > 0 && (
               <Box
-                w="80px"
+                flex={1}
                 h="2px"
                 bg={isCompleted || isActive ? "blue.400" : "gray.200"}
               />

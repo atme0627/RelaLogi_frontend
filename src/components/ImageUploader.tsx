@@ -1,98 +1,85 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { Box, Button, Text } from "@chakra-ui/react";
+import { useState, useCallback, useEffect } from "react";
+import { Box, Text } from "@chakra-ui/react";
 import { FiX } from "react-icons/fi";
 import Image from "next/image";
 import { ImageDropZone } from "@/components/ImageDropZone";
 import { usePuzzleImage } from "@/contexts/PuzzleImageContext";
 import { mockPreviewUrl, mockFile } from "@/mocks/dev-defaults";
 
-// 画像選択 → プレビュー → 次画面への遷移を管理
+// 画像選択 → プレビュー表示を管理
 export function ImageUploader() {
-  const router = useRouter();
   const { setPreviewUrl: sharePuzzleImage } = usePuzzleImage();
 
   const [file, setFile] = useState<File | null>(mockFile);
   const [previewUrl, setPreviewUrl] = useState(mockPreviewUrl);
 
+  // mock初期値をcontextに共有
+  useEffect(() => {
+    if (mockPreviewUrl) sharePuzzleImage(mockPreviewUrl);
+  }, [sharePuzzleImage]);
+
   const handleSelect = useCallback((selected: File) => {
     setFile(selected);
-    setPreviewUrl(URL.createObjectURL(selected));
-  }, []);
+    const url = URL.createObjectURL(selected);
+    setPreviewUrl(url);
+    sharePuzzleImage(url);
+  }, [sharePuzzleImage]);
 
   const handleReset = useCallback(() => {
     setFile(null);
     setPreviewUrl("");
-  }, []);
+    sharePuzzleImage("");
+  }, [sharePuzzleImage]);
 
-  const handleNext = useCallback(() => {
-    if (!previewUrl) return;
-    sharePuzzleImage(previewUrl);
-    router.push("/crop");
-  }, [previewUrl, sharePuzzleImage, router]);
-
-  // 未選択時：ドロップゾーン、選択後：ファイル情報 — 同じ点線枠内で切り替え
   if (!file) {
-    return <ImageDropZone onSelect={handleSelect} />;
+    return (
+      <Box bg="white" borderRadius="xl" boxShadow="md" p={4}>
+        <ImageDropZone onSelect={handleSelect} />
+      </Box>
+    );
   }
 
   const fileSize = (file.size / 1024).toFixed(1);
 
   return (
-    <Box w="100%" display="flex" flexDirection="column" gap={4}>
-      {/* ファイル情報カード */}
+    <Box position="relative">
       <Box
+        as="button"
+        position="absolute"
+        top={-3}
+        right={-3}
+        zIndex={1}
+        bg="gray.500"
+        color="white"
+        borderRadius="full"
+        w="28px"
+        h="28px"
         display="flex"
         alignItems="center"
-        gap={4}
-        p={4}
-        border="1px solid"
-        borderColor="gray.200"
-        borderRadius="lg"
-        bg="gray.50"
+        justifyContent="center"
+        cursor="pointer"
+        onClick={handleReset}
+        _hover={{ bg: "gray.700" }}
+        fontSize="14px"
       >
-        <Box
-          w="48px"
-          h="48px"
-          borderRadius="md"
-          overflow="hidden"
-          flexShrink={0}
-        >
+        <FiX />
+      </Box>
+      <Box bg="white" borderRadius="xl" boxShadow="md" p={4} display="flex" flexDirection="column" alignItems="center" gap={3}>
+        <Box borderRadius="lg" overflow="hidden">
           <Image
             src={previewUrl}
-            alt="サムネイル"
-            width={48}
-            height={48}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            alt="プレビュー"
+            width={240}
+            height={240}
+            style={{ width: "240px", height: "auto", display: "block", objectFit: "contain" }}
           />
         </Box>
-        <Box flex={1} overflow="hidden">
-          <Text fontWeight="bold" truncate>{file.name}</Text>
-          <Text textStyle="label" color="gray.500">{fileSize} KB</Text>
+        <Box textAlign="center">
+          <Text fontWeight="bold" fontSize="sm" truncate>{file.name}</Text>
+          <Text textStyle="caption" color="gray.500">{fileSize} KB</Text>
         </Box>
-        <Box
-          as="button"
-          color="gray.400"
-          fontSize="20px"
-          cursor="pointer"
-          onClick={handleReset}
-          _hover={{ color: "gray.600" }}
-        >
-          <FiX />
-        </Box>
-      </Box>
-
-      {/* 次へボタン */}
-      <Box display="flex" justifyContent="center">
-        <Button
-          colorPalette="blue"
-          fontWeight="bold"
-          onClick={handleNext}
-        >
-          次へ
-        </Button>
       </Box>
     </Box>
   );

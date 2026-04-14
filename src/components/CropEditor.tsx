@@ -17,26 +17,26 @@ type DragTarget = {
 
 const REGION_COLORS = ["#3B82F6", "#EF4444"]; // 青（縦ヒント）、赤（横ヒント）
 
-// 共有点: 縦ヒントの右上(0,1) と 横ヒントの左下(1,3)
-const SHARED_POINT = { from: [0, 1], to: [1, 3] } as const;
+// 共有点: 縦ヒントの左下(0,3) と 横ヒントの右上(1,1)
+const SHARED_POINT = { from: [0, 3], to: [1, 1] } as const;
 
 // 画像サイズに対する初期領域の比率で配置
 function createInitialRegions(w: number, h: number): [Quad, Quad] {
   const shared = { x: w * 0.35, y: h * 0.35 };
   return [
-    // 縦ヒント：左側
-    [
-      { x: w * 0.05, y: h * 0.05 },
-      { ...shared },
-      { x: w * 0.35, y: h * 0.7 },
-      { x: w * 0.05, y: h * 0.7 },
-    ],
-    // 横ヒント：上部
+    // 縦ヒント：盤面の上部（共有点が右下）
     [
       { x: w * 0.35, y: h * 0.05 },
       { x: w * 0.95, y: h * 0.05 },
       { x: w * 0.95, y: h * 0.35 },
       { ...shared },
+    ],
+    // 横ヒント：盤面の左側（共有点が右上）
+    [
+      { x: w * 0.05, y: h * 0.35 },
+      { ...shared },
+      { x: w * 0.35, y: h * 0.95 },
+      { x: w * 0.05, y: h * 0.95 },
     ],
   ];
 }
@@ -68,6 +68,7 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
   const [imageSize, setImageSize] = useState<{ w: number; h: number } | null>(null);
   const [regions, setRegions] = useState<[Quad, Quad] | null>(null);
   const [drag, setDrag] = useState<DragTarget>(null);
+  const [hover, setHover] = useState<DragTarget>(null);
 
   // 画像のnaturalSizeから初期領域をセット
   const initFromImage = useCallback((img: HTMLImageElement) => {
@@ -157,13 +158,14 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
       ref={containerRef}
       position="relative"
       display="inline-block"
-      w="100%"
+      maxW="100%"
+      maxH="100%"
       borderRadius="xl"
       overflow="hidden"
       userSelect="none"
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      style={{ touchAction: "none" }}
+      style={{ touchAction: "none", cursor: drag || hover ? "none" : undefined }}
     >
       {/* パズル画像 */}
       <img
@@ -171,7 +173,7 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
         src={effectiveUrl}
         alt="パズル画像"
         onLoad={handleImageLoad}
-        style={{ width: "100%", display: "block" }}
+        style={{ maxWidth: "100%", maxHeight: "100%", display: "block", objectFit: "contain" }}
       />
 
       {/* SVGオーバーレイ: グレーアウト + 切り抜き領域 + ドラッグハンドル */}
@@ -227,18 +229,53 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
                   quad.map((point, pi) => {
                     if (isSharedAndSkip(ri, pi)) return null;
                     const isShared = getLinkedPoint(ri, pi) !== null;
+                    const isDragging = drag?.regionIndex === ri && drag?.pointIndex === pi;
+                    const isDraggingShared = isShared && drag && getLinkedPoint(drag.regionIndex, drag.pointIndex) !== null;
+                    const isHovering = hover?.regionIndex === ri && hover?.pointIndex === pi;
+                    const isHoveringShared = isShared && hover && getLinkedPoint(hover.regionIndex, hover.pointIndex) !== null;
+                    const active = isDragging || isDraggingShared || isHovering || isHoveringShared;
+                    const r = active ? handleRadius * 1.3 : handleRadius;
+                    if (isShared) {
+                      const cx = point.x;
+                      const cy = point.y;
+                      return (
+                        <g
+                          key={`${ri}-${pi}`}
+                          cursor="none"
+                          onPointerDown={(e) => handlePointerDown(ri, pi, e)}
+                          onPointerEnter={() => setHover({ regionIndex: ri, pointIndex: pi })}
+                          onPointerLeave={() => setHover(null)}
+                        >
+                          {active && <circle cx={cx} cy={cy} r={r * 1.4} fill="white" opacity={0.5} />}
+                          <defs>
+                            <clipPath id="shared-top-right">
+                              <polygon points={`${cx - r * 2},${cy - r * 2} ${cx + r * 2},${cy - r * 2} ${cx + r * 2},${cy + r * 2}`} />
+                            </clipPath>
+                            <clipPath id="shared-bottom-left">
+                              <polygon points={`${cx - r * 2},${cy - r * 2} ${cx + r * 2},${cy + r * 2} ${cx - r * 2},${cy + r * 2}`} />
+                            </clipPath>
+                          </defs>
+                          <circle cx={cx} cy={cy} r={r} fill={REGION_COLORS[0]} clipPath="url(#shared-top-right)" />
+                          <circle cx={cx} cy={cy} r={r} fill={REGION_COLORS[1]} clipPath="url(#shared-bottom-left)" />
+                        </g>
+                      );
+                    }
                     return (
-                      <circle
-                        key={`${ri}-${pi}`}
-                        cx={point.x}
-                        cy={point.y}
-                        r={handleRadius}
-                        fill="white"
-                        stroke={isShared ? "#8B5CF6" : REGION_COLORS[ri]}
-                        strokeWidth={lineWidth}
-                        cursor="grab"
-                        onPointerDown={(e) => handlePointerDown(ri, pi, e)}
-                      />
+                      <g key={`${ri}-${pi}`}>
+                        {active && <circle cx={point.x} cy={point.y} r={r * 1.4} fill="white" opacity={0.5} />}
+                        <circle
+                          cx={point.x}
+                          cy={point.y}
+                          r={r}
+                          fill={REGION_COLORS[ri]}
+                          stroke={REGION_COLORS[ri]}
+                          strokeWidth={lineWidth}
+                          cursor="none"
+                          onPointerDown={(e) => handlePointerDown(ri, pi, e)}
+                          onPointerEnter={() => setHover({ regionIndex: ri, pointIndex: pi })}
+                          onPointerLeave={() => setHover(null)}
+                        />
+                      </g>
                     );
                   }),
                 )}

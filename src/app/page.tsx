@@ -14,7 +14,8 @@ export default function Home() {
       currentStep={0}
       title="画像アップロード"
       description="写真を撮るだけでイラストロジックを電子化。いつでもどこでもブラウザで楽しめます。"
-      onNext={previewUrl ? () => router.push("/crop") : undefined}
+      onNext={() => router.push("/crop")}
+      nextDisabled={!previewUrl}
     >
       <ImageUploader />
     </PageLayout>
