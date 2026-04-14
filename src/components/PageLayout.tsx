@@ -75,10 +75,10 @@ export function PageLayout({
               <StepIndicator totalSteps={4} currentStep={currentStep} />
             </Box>
           )}
-          <Text fontSize="xl" fontWeight="bold">
+          <Text textStyle="heading">
             {title}
           </Text>
-          <Text color="gray.500" fontSize="sm">
+          <Text textStyle="caption">
             {description}
           </Text>
           {sideActions && <Box mt={2}>{sideActions}</Box>}

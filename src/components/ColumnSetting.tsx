@@ -67,7 +67,7 @@ export function ColumnSetting({
       justifyContent="flex-end"
       pb={1}
     >
-      <Text fontSize="2xs" color="gray.500" lineHeight="1">
+      <Text textStyle="caption" lineHeight="1">
         {label}
       </Text>
       {controls}

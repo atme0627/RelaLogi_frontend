@@ -1,6 +1,7 @@
 "use client";
 
-import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
+import { system } from "@/theme";
 import { MswProvider } from "@/mocks/MswProvider";
 import { PuzzleImageProvider } from "@/contexts/PuzzleImageContext";
 import { PuzzleDataProvider } from "@/contexts/PuzzleDataContext";
@@ -9,7 +10,7 @@ import { PuzzleDataProvider } from "@/contexts/PuzzleDataContext";
 export function Provider({ children }: { children: React.ReactNode }) {
   return (
     <MswProvider>
-      <ChakraProvider value={defaultSystem}>
+      <ChakraProvider value={system}>
         <PuzzleImageProvider>
           <PuzzleDataProvider>{children}</PuzzleDataProvider>
         </PuzzleImageProvider>

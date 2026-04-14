@@ -69,8 +69,7 @@ export function RowSetting({
       pl={reverse ? 1 : 0}
     >
       <Text
-        fontSize="2xs"
-        color="gray.500"
+        textStyle="caption"
         lineHeight="1"
         style={{ writingMode: "vertical-rl", textOrientation: "upright" }}
         whiteSpace="nowrap"
