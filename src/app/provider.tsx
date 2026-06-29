@@ -2,6 +2,7 @@
 
 import { ChakraProvider } from "@chakra-ui/react";
 import { system } from "@/theme";
+import { EmotionRegistry } from "./emotion-registry";
 import { MswProvider } from "@/mocks/MswProvider";
 import { PuzzleImageProvider } from "@/contexts/PuzzleImageContext";
 import { PuzzleDataProvider } from "@/contexts/PuzzleDataContext";
@@ -11,13 +12,15 @@ import { NavigationProvider } from "@/contexts/NavigationContext";
 export function Provider({ children }: { children: React.ReactNode }) {
   return (
     <MswProvider>
-      <ChakraProvider value={system}>
-        <NavigationProvider>
-          <PuzzleImageProvider>
-            <PuzzleDataProvider>{children}</PuzzleDataProvider>
-          </PuzzleImageProvider>
-        </NavigationProvider>
-      </ChakraProvider>
+      <EmotionRegistry>
+        <ChakraProvider value={system}>
+          <NavigationProvider>
+            <PuzzleImageProvider>
+              <PuzzleDataProvider>{children}</PuzzleDataProvider>
+            </PuzzleImageProvider>
+          </NavigationProvider>
+        </ChakraProvider>
+      </EmotionRegistry>
     </MswProvider>
   );
 }
