@@ -7,6 +7,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { SizeSettingBoard } from "@/components/SizeSettingBoard";
 import { usePuzzleImage } from "@/contexts/PuzzleImageContext";
 import { usePuzzleData } from "@/contexts/PuzzleDataContext";
+import type { HintParameter, RecognizeResponse } from "@/types/puzzle";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 
@@ -39,34 +40,32 @@ export default function SizePage() {
       const res = await fetch(previewUrl);
       const blob = await res.blob();
 
-      const formData = new FormData();
-      formData.append("image", blob, "puzzle.png");
-      formData.append("verticalHintRegion", JSON.stringify({
-        rows: maxVerticalHintRows,
-        cols: gameCols,
-        vertices: cropRegions[0],
-      }));
-      formData.append("horizontalHintRegion", JSON.stringify({
-        rows: gameRows,
-        cols: maxHorizontalHintCols,
-        vertices: cropRegions[1],
-      }));
+      const hintParameter: HintParameter = {
+        verticalHintSize: { rows: maxVerticalHintRows, cols: gameCols },
+        horizontalHintSize: { rows: gameRows, cols: maxHorizontalHintCols },
+        verticalHintRegion: cropRegions[0],
+        horizontalHintRegion: cropRegions[1],
+      };
 
-      const apiRes = await fetch(`${API_BASE}/api/puzzles/crop`, {
+      const formData = new FormData();
+      formData.append("puzzleImage", blob, "puzzle.png");
+      formData.append("hintParameter", JSON.stringify(hintParameter));
+
+      const apiRes = await fetch(`${API_BASE}/api/puzzles/recognize`, {
         method: "POST",
         body: formData,
       });
 
       if (!apiRes.ok) throw new Error(`送信失敗 (${apiRes.status})`);
 
-      const data = await apiRes.json();
+      const data: RecognizeResponse = await apiRes.json();
 
       setSizeConfig({ gameRows, gameCols, maxVerticalHintRows, maxHorizontalHintCols });
       setOcrResult({
-        verticalHint: data.vertical_hint,
-        horizontalHint: data.horizontal_hint,
-        verticalHintImage: data.vertical_hint_image,
-        horizontalHintImage: data.horizontal_hint_image,
+        verticalHint: data.verticalHintGrid.values,
+        horizontalHint: data.horizontalHintGrid.values,
+        verticalHintImage: data.verticalHintImage,
+        horizontalHintImage: data.horizontalHintImage,
       });
 
       router.push("/confirm");

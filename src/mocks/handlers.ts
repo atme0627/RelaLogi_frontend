@@ -3,6 +3,7 @@
 import { http, HttpResponse } from "msw";
 import sampleVerticalHint from "@/mocks/fixtures/sample_cropped_height_hint.png";
 import sampleHorizontalHint from "@/mocks/fixtures/sample_cropped_width_hint.png";
+import type { HintParameter, GridSize } from "@/types/puzzle";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 
@@ -19,25 +20,31 @@ function generateMockHints(rows: number, cols: number): string[][] {
   });
 }
 
+// OpenAPIのGrid（size + values）形式でモックグリッドを生成
+function mockGrid(size: GridSize) {
+  return {
+    size,
+    values: generateMockHints(size.rows, size.cols),
+  };
+}
+
 export const handlers = [
   http.get(`${API_BASE}/api/health`, () => {
     return HttpResponse.json({ status: "ok" });
   }),
 
-  http.post(`${API_BASE}/api/puzzles/crop`, async ({ request }) => {
+  http.post(`${API_BASE}/api/puzzles/recognize`, async ({ request }) => {
     const formData = await request.formData();
 
-    const vRegion = JSON.parse(formData.get("verticalHintRegion") as string);
-    const hRegion = JSON.parse(formData.get("horizontalHintRegion") as string);
-
-    const verticalHint = generateMockHints(vRegion.rows, vRegion.cols);
-    const horizontalHint = generateMockHints(hRegion.rows, hRegion.cols);
+    const hintParameter = JSON.parse(
+      formData.get("hintParameter") as string
+    ) as HintParameter;
 
     return HttpResponse.json({
-      vertical_hint: verticalHint,
-      horizontal_hint: horizontalHint,
-      vertical_hint_image: sampleVerticalHint.src ?? sampleVerticalHint,
-      horizontal_hint_image: sampleHorizontalHint.src ?? sampleHorizontalHint,
+      verticalHintGrid: mockGrid(hintParameter.verticalHintSize),
+      horizontalHintGrid: mockGrid(hintParameter.horizontalHintSize),
+      verticalHintImage: sampleVerticalHint.src ?? sampleVerticalHint,
+      horizontalHintImage: sampleHorizontalHint.src ?? sampleHorizontalHint,
     });
   }),
 ];
