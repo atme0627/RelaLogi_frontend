@@ -120,7 +120,7 @@ export function PlayableGameBoard({
       }
       lastCellRef.current = cell;
     },
-    [cells, onCellChange, cellFromEvent],
+    [cells, onCellChange, cellFromEvent, paintMode],
   );
 
   // mouseMoveで座標からセルを計算し、前回セルとの間を補間して適用 + ホバー追跡
