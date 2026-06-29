@@ -9,7 +9,7 @@ import { createMockConfirmDefaults } from "@/mocks/dev-defaults";
 
 export default function ConfirmPage() {
   const router = useRouter();
-  const { sizeConfig: ctxSizeConfig, ocrResult: ctxOcrResult } = usePuzzleData();
+  const { sizeConfig: ctxSizeConfig, ocrResult: ctxOcrResult, setOcrResult } = usePuzzleData();
 
   const [devDefaults] = useState(() =>
     (!ctxSizeConfig || !ctxOcrResult) ? createMockConfirmDefaults() : null,
@@ -59,7 +59,10 @@ export default function ConfirmPage() {
       title="認識結果の確認・修正"
       description={"結果を確認し、\n誤りがあれば手動で\n修正してください。"}
       onPrev={() => router.push("/size")}
-      onNext={() => router.push("/play")}
+      onNext={() => {
+        setOcrResult({ ...ocrResult, verticalHint, horizontalHint });
+        router.push("/play");
+      }}
     >
       <ConfirmBoard
         gameCols={sizeConfig.gameCols}
