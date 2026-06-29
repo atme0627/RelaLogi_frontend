@@ -4,7 +4,6 @@ import { useState, useRef, useCallback } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { usePuzzleImage } from "@/contexts/PuzzleImageContext";
-import { mockPreviewUrl } from "@/mocks/dev-defaults";
 import type { Point, Quad } from "@/types/puzzle";
 
 export type { Point, Quad };
@@ -78,7 +77,6 @@ type Props = {
 // アップロード画像上で2つのヒント領域を選択するエディタ
 export function CropEditor({ onRegionsChange }: Props = {}) {
   const { previewUrl } = usePuzzleImage();
-  const effectiveUrl = previewUrl || mockPreviewUrl;
   const svgRef = useRef<SVGSVGElement>(null);
   const [imageSize, setImageSize] = useState<{ w: number; h: number } | null>(null);
   const [regions, setRegions] = useState<[Quad, Quad] | null>(null);
@@ -155,7 +153,7 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
     if (regions) onRegionsChange?.(regions);
   }, [regions, onRegionsChange]);
 
-  if (!effectiveUrl) {
+  if (!previewUrl) {
     return (
       <Box textAlign="center" py={8}>
         <Text color="gray.500">画像がありません。アップロード画面に戻ってください。</Text>
@@ -182,7 +180,7 @@ export function CropEditor({ onRegionsChange }: Props = {}) {
       {/* パズル画像: objectFit containで中央配置 */}
       <img
         ref={imgRef}
-        src={effectiveUrl}
+        src={previewUrl}
         alt="パズル画像"
         onLoad={handleImageLoad}
         style={{

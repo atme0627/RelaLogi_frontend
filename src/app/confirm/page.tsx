@@ -5,17 +5,10 @@ import { useRouter } from "next/navigation";
 import { PageLayout } from "@/components/PageLayout";
 import { ConfirmBoard } from "@/components/ConfirmBoard";
 import { usePuzzleData } from "@/contexts/PuzzleDataContext";
-import { createMockConfirmDefaults } from "@/mocks/dev-defaults";
 
 export default function ConfirmPage() {
   const router = useRouter();
-  const { sizeConfig: ctxSizeConfig, ocrResult: ctxOcrResult, setOcrResult } = usePuzzleData();
-
-  const [devDefaults] = useState(() =>
-    (!ctxSizeConfig || !ctxOcrResult) ? createMockConfirmDefaults() : null,
-  );
-  const sizeConfig = ctxSizeConfig ?? devDefaults?.sizeConfig ?? null;
-  const ocrResult = ctxOcrResult ?? devDefaults?.ocrResult ?? null;
+  const { sizeConfig, ocrResult, setOcrResult } = usePuzzleData();
 
   const [verticalHint, setVerticalHint] = useState<string[][]>([]);
   const [horizontalHint, setHorizontalHint] = useState<string[][]>([]);

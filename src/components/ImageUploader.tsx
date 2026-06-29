@@ -1,24 +1,18 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { FiX } from "react-icons/fi";
 import Image from "next/image";
 import { ImageDropZone } from "@/components/ImageDropZone";
 import { usePuzzleImage } from "@/contexts/PuzzleImageContext";
-import { mockPreviewUrl, mockFile } from "@/mocks/dev-defaults";
 
 // 画像選択 → プレビュー表示を管理
 export function ImageUploader() {
   const { setPreviewUrl: sharePuzzleImage } = usePuzzleImage();
 
-  const [file, setFile] = useState<File | null>(mockFile);
-  const [previewUrl, setPreviewUrl] = useState(mockPreviewUrl);
-
-  // mock初期値をcontextに共有
-  useEffect(() => {
-    if (mockPreviewUrl) sharePuzzleImage(mockPreviewUrl);
-  }, [sharePuzzleImage]);
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState("");
 
   const handleSelect = useCallback((selected: File) => {
     setFile(selected);
