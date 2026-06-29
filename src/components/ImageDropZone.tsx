@@ -29,7 +29,7 @@ export function ImageDropZone({ onSelect, children }: Props) {
       e.preventDefault();
       setIsDragging(false);
       const file = e.dataTransfer.files[0];
-      if (file?.type.startsWith("image/")) {
+      if (file?.type === "image/png") {
         onSelect(file);
       }
     },
@@ -77,7 +77,7 @@ export function ImageDropZone({ onSelect, children }: Props) {
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/png"
         hidden
         onChange={handleChange}
       />

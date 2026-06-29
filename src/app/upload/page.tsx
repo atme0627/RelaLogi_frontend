@@ -13,7 +13,7 @@ export default function UploadPage() {
     <PageLayout
       currentStep={0}
       title="画像をアップロード"
-      description={"イラストロジックの問題画像を\nアップロードしてください。\n\n対応形式: JPG, PNG"}
+      description={"イラストロジックの問題画像を\nアップロードしてください。\n\n対応形式: PNG"}
       onNext={() => router.push("/crop")}
       nextDisabled={!previewUrl}
     >
