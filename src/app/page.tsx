@@ -38,12 +38,7 @@ export default function Home() {
       </Box>
 
       {/* メインエリア */}
-      <Box
-        flex={1}
-        overflow="auto"
-        bg="gray.100"
-        position="relative"
-      >
+      <Box flex={1} overflow="auto" bg="gray.100" position="relative">
         <GridBackground />
 
         {/* コンテンツ */}
@@ -68,12 +63,7 @@ export default function Home() {
             >
               RELALOGI
             </Text>
-            <Text
-              mt={4}
-              textStyle="body"
-              color="gray.500"
-              fontSize="md"
-            >
+            <Text mt={4} textStyle="body" color="gray.500" fontSize="md">
               雑誌のイラストロジックを画像からデジタル化して、ブラウザ上で解く
             </Text>
           </Box>
